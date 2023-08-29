@@ -28,6 +28,7 @@ import org.kiwix.kiwixmobile.core.CoreApp
 import org.kiwix.kiwixmobile.core.StorageObserver
 import org.kiwix.kiwixmobile.core.dao.FetchDownloadDao
 import org.kiwix.kiwixmobile.core.dao.HistoryDao
+import org.kiwix.kiwixmobile.core.dao.LibkiwixBookmarks
 import org.kiwix.kiwixmobile.core.dao.NewBookDao
 import org.kiwix.kiwixmobile.core.dao.NewBookmarksDao
 import org.kiwix.kiwixmobile.core.dao.NewLanguagesDao
@@ -93,6 +94,7 @@ interface CoreComponent {
   fun newBookmarksDao(): NewBookmarksDao
   fun connectivityManager(): ConnectivityManager
   fun objectBoxToLibkiwixMigrator(): ObjectBoxToLibkiwixMigrator
+  fun libkiwixBookmarks(): LibkiwixBookmarks
   fun context(): Context
   fun downloader(): Downloader
   fun notificationManager(): NotificationManager
