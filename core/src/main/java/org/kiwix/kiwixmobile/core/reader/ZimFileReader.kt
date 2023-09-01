@@ -53,7 +53,7 @@ private const val TAG = "ZimFileReader"
 
 class ZimFileReader constructor(
   val zimFile: File,
-  private val jniKiwixReader: Archive,
+  val jniKiwixReader: Archive,
   private val nightModeConfig: NightModeConfig,
   private val searcher: SuggestionSearcher = SuggestionSearcher(jniKiwixReader)
 ) {
