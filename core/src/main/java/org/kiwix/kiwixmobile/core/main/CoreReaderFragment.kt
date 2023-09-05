@@ -106,7 +106,6 @@ import org.kiwix.kiwixmobile.core.base.BaseFragment
 import org.kiwix.kiwixmobile.core.base.FragmentActivityExtensions
 import org.kiwix.kiwixmobile.core.dao.LibkiwixBookmarks
 import org.kiwix.kiwixmobile.core.dao.NewBookDao
-import org.kiwix.kiwixmobile.core.dao.NewBookmarksDao
 import org.kiwix.kiwixmobile.core.downloader.fetch.DOWNLOAD_NOTIFICATION_TITLE
 import org.kiwix.kiwixmobile.core.extensions.ActivityExtensions.hasNotificationPermission
 import org.kiwix.kiwixmobile.core.extensions.ActivityExtensions.requestNotificationPermission
@@ -235,10 +234,6 @@ abstract class CoreReaderFragment :
   @JvmField
   @Inject
   var menuFactory: MainMenu.Factory? = null
-
-  @JvmField
-  @Inject
-  var newBookmarksDao: NewBookmarksDao? = null
 
   @JvmField
   @Inject
@@ -1453,7 +1448,7 @@ abstract class CoreReaderFragment :
   protected fun setUpBookmarks(zimFileReader: ZimFileReader) {
     safeDispose()
     bookmarkingDisposable = Flowable.combineLatest(
-      newBookmarksDao?.bookmarkUrlsForCurrentBook(zimFileReader),
+      libkiwixBookmarks?.bookmarkUrlsForCurrentBook(zimFileReader),
       webUrlsProcessor,
       List<String?>::contains
     )
