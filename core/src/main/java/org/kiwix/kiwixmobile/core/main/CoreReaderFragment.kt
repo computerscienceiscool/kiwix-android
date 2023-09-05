@@ -334,7 +334,6 @@ abstract class CoreReaderFragment :
   private var readAloudService: ReadAloudService? = null
   private var navigationHistoryList: MutableList<NavigationHistoryListItem> = ArrayList()
   private var isReadSelection = false
-  private var libKiwixBook: Book? = null
 
   private var storagePermissionForNotesLauncher: ActivityResultLauncher<String>? =
     registerForActivityResult(
@@ -1053,7 +1052,6 @@ abstract class CoreReaderFragment :
     readAloudService = null
     storagePermissionForNotesLauncher?.unregister()
     storagePermissionForNotesLauncher = null
-    libKiwixBook = null
   }
 
   private fun updateTableOfContents() {
@@ -1563,16 +1561,16 @@ abstract class CoreReaderFragment :
   fun toggleBookmark() {
     getCurrentWebView()?.url?.let { articleUrl ->
       zimReaderContainer?.zimFileReader?.let { zimFileReader ->
-        libKiwixBook = Book().apply {
+        val libKiwixBook = Book().apply {
           update(zimFileReader.jniKiwixReader)
         }
         if (isBookmarked) {
-          repositoryActions?.deleteBookmark(libKiwixBook!!.id, articleUrl)
+          repositoryActions?.deleteBookmark(libKiwixBook.id, articleUrl)
           snackBarRoot?.snack(R.string.bookmark_removed)
         } else {
           getCurrentWebView()?.title?.let {
             repositoryActions?.saveBookmark(
-              LibkiwixBookmarkItem(it, articleUrl, zimFileReader, libKiwixBook!!)
+              LibkiwixBookmarkItem(it, articleUrl, zimFileReader, libKiwixBook)
             )
             snackBarRoot?.snack(
               stringId = R.string.bookmark_added,
