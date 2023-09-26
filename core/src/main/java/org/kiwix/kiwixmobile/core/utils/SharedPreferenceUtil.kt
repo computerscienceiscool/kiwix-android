@@ -60,8 +60,11 @@ class SharedPreferenceUtil @Inject constructor(val context: Context) {
   val prefIsFirstRun: Boolean
     get() = sharedPreferences.getBoolean(PREF_IS_FIRST_RUN, true)
 
-  val prefIsTest: Boolean
+  var prefIsTest: Boolean
     get() = sharedPreferences.getBoolean(PREF_IS_TEST, false)
+    set(prefIsTest) {
+      sharedPreferences.edit { putBoolean(PREF_IS_TEST, prefIsTest) }
+    }
 
   val prefFullScreen: Boolean
     get() = sharedPreferences.getBoolean(PREF_FULLSCREEN, false)
