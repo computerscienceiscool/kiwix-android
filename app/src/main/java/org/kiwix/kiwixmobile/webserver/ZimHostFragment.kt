@@ -89,6 +89,7 @@ class ZimHostFragment : BaseFragment(), ZimHostCallbacks, ZimHostContract.View {
   private lateinit var serviceConnection: ServiceConnection
   private var dialog: Dialog? = null
   private var activityZimHostBinding: ActivityZimHostBinding? = null
+  private var isHotspotServiceRunning = false
   override val fragmentTitle: String? by lazy {
     getString(R.string.menu_wifi_hotspot)
   }
@@ -290,7 +291,11 @@ class ZimHostFragment : BaseFragment(), ZimHostCallbacks, ZimHostContract.View {
   }
 
   private fun stopServer() {
-    requireActivity().startService(createHotspotIntent(ACTION_STOP_SERVER))
+    requireActivity().startService(
+      createHotspotIntent(ACTION_STOP_SERVER)
+    ).also {
+      isHotspotServiceRunning = false
+    }
   }
 
   private fun select(bookOnDisk: BooksOnDiskListItem.BookOnDisk) {
@@ -327,6 +332,9 @@ class ZimHostFragment : BaseFragment(), ZimHostCallbacks, ZimHostContract.View {
   private fun unbindService() {
     hotspotService?.let {
       requireActivity().unbindService(serviceConnection)
+      if (!isHotspotServiceRunning) {
+        unRegisterHotspotService()
+      }
     }
   }
 
@@ -392,9 +400,14 @@ class ZimHostFragment : BaseFragment(), ZimHostCallbacks, ZimHostContract.View {
   override fun onDestroyView() {
     super.onDestroyView()
     activityZimHostBinding?.recyclerViewZimHost?.adapter = null
-    hotspotService?.registerCallBack(null)
+    unRegisterHotspotService()
     presenter.detachView()
     activityZimHostBinding = null
+  }
+
+  private fun unRegisterHotspotService() {
+    hotspotService?.registerCallBack(null)
+    hotspotService = null
   }
 
   // Advice user to turn on hotspot manually for API<26
@@ -461,7 +474,9 @@ class ZimHostFragment : BaseFragment(), ZimHostCallbacks, ZimHostContract.View {
       createHotspotIntent(ACTION_START_SERVER).putStringArrayListExtra(
         SELECTED_ZIM_PATHS_KEY, selectedBooksPath
       ).putExtra(RESTART_SERVER, restartServer)
-    )
+    ).also {
+      isHotspotServiceRunning = true
+    }
   }
 
   override fun onIpAddressInvalid() {
